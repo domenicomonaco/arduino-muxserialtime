@@ -1,0 +1,3 @@
+[submodule "statistic"]
+	path = statistic
+	url = https://kiuz@github.com/kiuz/Arduino-Statistic-Library.git
