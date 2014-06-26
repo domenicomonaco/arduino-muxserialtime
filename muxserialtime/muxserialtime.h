@@ -1,15 +1,8 @@
-#define ARRAYN 3;
-
 #include <sstream>
-
-#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
-        ( std::ostringstream() << std::dec << x ) ).str()
-
-///http://stackoverflow.com/a/5590404
 
 class MuxSerialTime{
 protected:
-  static const int array=3;
+  static const int array = 3;
 
   String ValueLineDivider;
 
@@ -36,7 +29,7 @@ public:
     
     for(int i=0;i<array;i++){
       if(i==0) MuxSerialTime::GroupsDelay[i]=1;
-      else MuxSerialTime::GroupsDelay[i]=i*5;
+      else MuxSerialTime::GroupsDelay[i]=i*1;
     }
 
     MuxSerialTime::ValueLineDivider = divider;
@@ -49,19 +42,21 @@ public:
 
   void putValue(double value){
 
+    MuxSerialTime::currentTime = millis();
+    
     if(MuxSerialTime::skyps == 0){
-      MuxSerialTime::currentTime = millis();
+      
       for(int i=0;i<array;i++){
-
           if(
             ((MuxSerialTime::currentTime-MuxSerialTime::GroupsElapsed[i])/1000) 
               >= (MuxSerialTime::GroupMultiply*MuxSerialTime::GroupsDelay[i])
             ) {
-            String s = String(i);
-          Serial.println(s);
-            String timeID = s +"T";
+
+            String timeID = String(String(i+1) + "T");            
             MuxSerialTime::GroupsElapsed[i] = MuxSerialTime::currentTime;
             PrintTimedStats(MuxSerialTime::grouped[i], timeID ,"MULTI-AVG");
+            MuxSerialTime::grouped[i].clear();
+
           }
 
           MuxSerialTime::grouped[i].add(value);
