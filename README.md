@@ -23,4 +23,18 @@ I'm working on a simple implementation of Wireless Sensor Network with Arduino a
 
 * AnalogMuxSerialTime 
 
+### Configuration ###
+
+	mux1.config("potentiomeeter", "1","#", 0, 60);
+	mux2.config("potentiomeeter", "2","#", 0, 60);
+
+	config(<<TYPE>>, <<ADDRESS>>,<<Value divider>>, <<Skyps of reading>>, <<60s>>);
+
+### Using ###
+
+	mux1.putValue(VALUE1);
+	mux2.putValue(VALUE2);
+
+
 ## Special Thanks, inspiration and forks ##
+* nothing
