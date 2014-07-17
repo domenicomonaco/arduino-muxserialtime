@@ -2,7 +2,7 @@
 * Author: Domenico Monaco, domenico.monaco[@]kiuz.it
 * Site: http://monaco.kiuz.it
 * LICENSE: GNU v2 
-* Date: 26 / 06 / 2014
+* Date: 16 / 07 / 2014
 
 ## Goals ##
 * Managing outputs of multiple sensor and multiple types of temporal data on single Serial line: "multiplexing on serial line"
@@ -37,18 +37,22 @@ I'm working on a simple implementation of Wireless Sensor Network with Arduino a
 
 ### Example Otputs ###
 
-	0T#CURRENT#1#SINGLE-INSTANT#4.82
-	0T#TEMPERATURE#1#SINGLE-INSTANT#23.00
-	0T#CURRENT#1#SINGLE-INSTANT#7.85
-	0T#CURRENT#1#SINGLE-INSTANT#4.99
-	0T#CURRENT#1#SINGLE-INSTANT#7.68
-	0T#CURRENT#1#SINGLE-INSTANT#4.87
-	1T#TEMPERATURE#1#MULTI-AVG#23.00#23.00#23.00#0.00
-	2T#TEMPERATURE#1#MULTI-AVG#23.00#23.00#23.00#0.00
-	0T#TEMPERATURE#1#SINGLE-INSTANT#23.00
-	0T#CURRENT#1#SINGLE-INSTANT#7.88
-	0T#CURRENT#1#SINGLE-INSTANT#4.90
-	0T#CURRENT#1#SINGLE-INSTANT#7.80
+	0M#CURRENT#1#SINGLE-INSTANT#4.82
+	0M#TEMPERATURE#1#SINGLE-INSTANT#23.00
+	0M#CURRENT#1#SINGLE-INSTANT#7.85
+	0M#CURRENT#1#SINGLE-INSTANT#4.99
+	0M#CURRENT#1#SINGLE-INSTANT#7.68
+	0M#CURRENT#1#SINGLE-INSTANT#4.87
+	1M#TEMPERATURE#1#MULTI-AVG#23.00#23.00#23.00#0.00
+	2M#TEMPERATURE#1#MULTI-AVG#23.00#23.00#23.00#0.00
+	0M#TEMPERATURE#1#SINGLE-INSTANT#23.00
+	0M#CURRENT#1#SINGLE-INSTANT#7.88
+	0M#CURRENT#1#SINGLE-INSTANT#4.90
+	0M#CURRENT#1#SINGLE-INSTANT#7.80
 
 ## Special Thanks, inspiration and forks ##
 * nothing
+
+## ChangeLog ## 
+
+* ISSUE #1: Renamed "Temporal Aggregation ID" from 0T,1T...xT into 0M, 1M, 5M ... xM where x are time duration of aggregation

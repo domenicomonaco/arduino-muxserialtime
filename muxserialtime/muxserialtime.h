@@ -67,7 +67,10 @@ public:
               >= (MuxSerialTime::GroupMultiply*MuxSerialTime::GroupsDelay[i])
             ) {
 
-            String timeID = String(String(i+1) + "T");            
+            /**
+              * issue #1
+             **/
+            String timeID = MuxSerialTime::GroupsDelay[i] + "M");            
             MuxSerialTime::GroupsElapsed[i] = MuxSerialTime::currentTime;
             PrintTimedStats(MuxSerialTime::grouped[i], timeID ,"MULTI-AVG");
             MuxSerialTime::grouped[i].clear();
@@ -76,8 +79,11 @@ public:
 
           MuxSerialTime::grouped[i].add(value);
       }
-
-      MuxSerialTime::HEADSerialLine("0T", "SINGLE-INSTANT");
+      
+      /**
+        * issue #1
+       **/
+      MuxSerialTime::HEADSerialLine("0M", "SINGLE-INSTANT");
       Serial.println(value);
       
     }else{
