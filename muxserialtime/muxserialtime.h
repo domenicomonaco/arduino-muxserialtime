@@ -1,4 +1,19 @@
-#include <sstream>
+
+/**
+ * Author: Domenico Monaco, domenico.monaco@kiuz.it - monaco.kiuz.it
+ * 
+ * Description: This class manage aggregation of temporal data acquisition
+ *
+ * Version: 0.0.2
+ *
+ * Date: 17/07/2014
+ * License: GPL v2
+ * Copyright: Domenico Monaco
+ **/ 
+
+#include "Statistic.h"
+#include "Arduino.h"
+#include <string>
 
 class MuxSerialTime{
 protected:
