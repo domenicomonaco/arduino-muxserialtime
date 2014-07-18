@@ -1,5 +1,6 @@
 
 /**
+ * 
  * Author: Domenico Monaco, domenico.monaco@kiuz.it - monaco.kiuz.it
  * 
  * Description: This class manage aggregation of temporal data acquisition
@@ -9,6 +10,7 @@
  * Date: 17/07/2014
  * License: GPL v2
  * Copyright: Domenico Monaco
+ * 
  **/ 
 
 #include "Statistic.h"
@@ -18,6 +20,7 @@
 class MuxSerialTime{
 protected:
   static const int array = 3;
+  static const int delayDiff = 5;
 
   String ValueLineDivider;
 
@@ -43,8 +46,8 @@ public:
     MuxSerialTime::GroupMultiply=Multiply;
     
     for(int i=0;i<array;i++){
-      if(i==0) MuxSerialTime::GroupsDelay[i]=1;
-      else MuxSerialTime::GroupsDelay[i]=i*1;
+      if(i==0) MuxSerialTime::GroupsDelay[i] = 1;
+      else MuxSerialTime::GroupsDelay[i]= i * delayDiff;
     }
 
     MuxSerialTime::ValueLineDivider = divider;
@@ -68,9 +71,14 @@ public:
             ) {
 
             /**
-              * issue #1
+              * ISSUE#1: changed 0T,1T...nT ID into 0M,1M...nM 
+              * where n are size of time aggregation 
+              * 
+              * BUGFIX#1: fixed problem of conversion int into string 
+              * with String() arduino function
              **/
-            String timeID = MuxSerialTime::GroupsDelay[i] + "M");            
+            String timeSizeToString = String(MuxSerialTime::GroupsDelay[i]);
+            String timeID = (timeSizeToString + "M");            
             MuxSerialTime::GroupsElapsed[i] = MuxSerialTime::currentTime;
             PrintTimedStats(MuxSerialTime::grouped[i], timeID ,"MULTI-AVG");
             MuxSerialTime::grouped[i].clear();
@@ -81,7 +89,8 @@ public:
       }
       
       /**
-        * issue #1
+        * ISSUE#1: changed 0T,1T...nT ID into 0M,1M...nM 
+        * where n are size of time aggregation 
        **/
       MuxSerialTime::HEADSerialLine("0M", "SINGLE-INSTANT");
       Serial.println(value);
