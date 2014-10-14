@@ -5,7 +5,7 @@
  *
  * Description: This class manage aggregation of temporal data acquisition
  *
- * Version: 0.1.0
+ * Version: 0.1.1
  *
  * Date: 17/07/2014
  * License: GPL v2
@@ -28,13 +28,14 @@ protected:
     
     bool syncTime;
     char* LastDateTime;
+    char* zone;
     
     long int GroupMultiply;
     
-    long int GroupsDelay[array];
-    Statistic grouped[array];
+    long int GroupsDelay[3];
+    Statistic grouped[3];
     
-    long int GroupsElapsed[array];
+    long int GroupsElapsed[3];
     long int currentTime;
     
     int skyps;
@@ -43,11 +44,27 @@ protected:
     String addr;
     
 public:
-    void enableTime(char* date){
+    
+    /**
+     * Enable to using time by Arduino
+     * Recieve String of time in ISO format
+     */
+    void enableTime(char* date, char* z){
         LastDateTime = date;
+        zone = z;
         syncTime = true;
     }
-    void config(String ty="none", String ad="none", String divider="#", int skyp=5, long int Multiply=60){
+    
+    
+    /**
+     * Make configuration of this class
+     * ty = type of sensor
+     * ad = address of sensor
+     * divider = symbol used to divide values into serial outputs
+     * skyp = numbers of skips befor read
+     * Multiply
+     */
+    void config(String ty="none", String ad = "none", String divider = "#", int skyp=5, long int Multiply=60){
         syncTime=false;
         MuxSerialTime::addr = ad;
         MuxSerialTime::type =  ty;
@@ -67,11 +84,18 @@ public:
         }
     }
     
-    void putValue(char* date, double value){
-        LastDateTime = date;
+    /**
+     * put new value with new time
+     */
+    void putValue(char* date, double value, bool useTime){
+        if(syncTime){LastDateTime = date;}
         putValue(value);
     }
     
+    /**
+     *
+     * put new only new value
+     */
     void putValue(double value){
         
         MuxSerialTime::currentTime = millis();
@@ -92,13 +116,14 @@ public:
                      * with String() arduino function
                      **/
                     
-                    String timeSizeToString = String(MuxSerialTime::GroupsDelay[i]);
+                /**    String timeSizeToString = String(MuxSerialTime::GroupsDelay[i]);
                     String timeID = (timeSizeToString + "M");
                     MuxSerialTime::GroupsElapsed[i] = MuxSerialTime::currentTime;
                     
-                    PrintTimedStats(MuxSerialTime::grouped[i], timeID ,"MULTI-AVG");
+                    PrintTimedStats(MuxSerialTime::grouped[i], timeID ,"A");
                     
-                    MuxSerialTime::grouped[i].clear();
+                    MuxSerialTime::grouped[i]=Statistic();
+                    MuxSerialTime::grouped[i].clear();**/
                     
                 }
                 
@@ -109,7 +134,7 @@ public:
              * ISSUE#1: changed 0T,1T...nT ID into 0M,1M...nM
              * where n are size of time aggregation
              **/
-            MuxSerialTime::HEADSerialLine("0M", "SINGLE-INSTANT");
+            MuxSerialTime::HEADSerialLine("0M", "S");
             Serial.println(value);
             
         }else{
@@ -135,15 +160,18 @@ public:
     
     void HEADSerialLine(String IDLine, String TypeValue){
         
-        if(syncTime != false){
+     /**   if(syncTime != false){
             Serial.print(LastDateTime);
             Serial.print(MuxSerialTime::ValueLineDivider);
         }else{
-            Serial.print("NONE");
+            Serial.print("-");
             Serial.print(MuxSerialTime::ValueLineDivider);
-            Serial.print("NONE");
+            Serial.print("-");
             Serial.print(MuxSerialTime::ValueLineDivider);
-        }
+            Serial.print("-");
+            Serial.print(MuxSerialTime::ValueLineDivider);
+        }**/
+        
         Serial.print(IDLine);
         Serial.print(MuxSerialTime::ValueLineDivider);
         Serial.print(MuxSerialTime::type);
