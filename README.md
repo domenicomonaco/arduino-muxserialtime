@@ -51,8 +51,20 @@ I'm working on a simple implementation of Wireless Sensor Network with Arduino a
 	0M#CURRENT#1#SINGLE-INSTANT#7.80
 
 ## Special Thanks, inspiration and forks ##
+
 * nothing
 
 ## ChangeLog ## 
 
 * ISSUE #1: Renamed "Temporal Aggregation ID" from 0T,1T...xT into 0M, 1M, 5M ... xM where x are time duration of aggregation
+
+
+## 0.1.2 ##
+
+* Deleting some unused Function parameter.
+
+## 0.1.3 ##
+
+* Renamed some variables. In order to improve the readability
+
+## 0.1.4 ##

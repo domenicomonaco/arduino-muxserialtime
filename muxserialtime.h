@@ -5,7 +5,7 @@
  *
  * Description: This class manage aggregation of temporal data acquisition
  *
- * Version: 0.1.1
+ * Version: 0.1.3
  *
  * Date: 17/07/2014
  * License: GPL v2
@@ -15,13 +15,13 @@
 
 #include "Statistic.h"
 #include "Arduino.h"
-
 #include <string>
 
 class MuxSerialTime{
 protected:
     
-    static const int array = 3;
+    static const int numAggr = 3;
+    
     static const int delayDiff = 5;
     
     String ValueLineDivider;
@@ -30,15 +30,15 @@ protected:
     char* LastDateTime;
     char* zone;
     
-    long int GroupMultiply;
+    static const long int SecondsInM = 60;
     
-    long int GroupsDelay[3];
-    Statistic grouped[3];
+    long int AggrDelay[numAggr];
+    Statistic Aggregation[numAggr];
     
-    long int GroupsElapsed[3];
-    long int currentTime;
+    long int AggrMillisElapsed[numAggr];
+    long int currentMillis;
     
-    int skyps;
+    int skips;
     
     String type;
     String addr;
@@ -50,6 +50,7 @@ public:
      * Recieve String of time in ISO format
      */
     void enableTime(char* date, char* z){
+        
         LastDateTime = date;
         zone = z;
         syncTime = true;
@@ -61,34 +62,33 @@ public:
      * ty = type of sensor
      * ad = address of sensor
      * divider = symbol used to divide values into serial outputs
-     * skyp = numbers of skips befor read
-     * Multiply
+     * sk = numbers of skips befor read
      */
-    void config(String ty="none", String ad = "none", String divider = "#", int skyp=5, long int Multiply=60){
+    void config(String ty="none", String ad = "none", String divider = "#", int sk=5){
         syncTime=false;
         MuxSerialTime::addr = ad;
         MuxSerialTime::type =  ty;
         
-        MuxSerialTime::GroupMultiply=Multiply;
-        
-        for(int i=0;i<array;i++){
-            if(i==0) MuxSerialTime::GroupsDelay[i] = 1;
-            else MuxSerialTime::GroupsDelay[i]= i * delayDiff;
+        for(int i=0;i<numAggr;i++){
+            if(i==0) MuxSerialTime::AggrDelay[i] = 1;
+            else MuxSerialTime::AggrDelay[i]= i * delayDiff;
         }
         
         MuxSerialTime::ValueLineDivider = divider;
-        MuxSerialTime::skyps = skyp;
+        MuxSerialTime::skips = sk;
         
-        for(int i=0;i<array;i++){
-            MuxSerialTime::GroupsElapsed[i]= millis();
+        for(int i=0;i<numAggr;i++){
+            MuxSerialTime::AggrMillisElapsed[i]= millis();
         }
     }
     
     /**
      * put new value with new time
      */
-    void putValue(char* date, double value, bool useTime){
-        if(syncTime){LastDateTime = date;}
+    void putValue(char* date, double value){
+        if(syncTime==true){
+            LastDateTime = date;
+        }
         putValue(value);
     }
     
@@ -98,14 +98,14 @@ public:
      */
     void putValue(double value){
         
-        MuxSerialTime::currentTime = millis();
+        MuxSerialTime::currentMillis = millis();
         
-        if(MuxSerialTime::skyps == 0){
+        if(MuxSerialTime::skips == 0){
             
-            for(int i=0;i<array;i++){
+            for(int i=0;i<numAggr;i++){
                 if(
-                   ((MuxSerialTime::currentTime-MuxSerialTime::GroupsElapsed[i])/1000)
-                   >= (MuxSerialTime::GroupMultiply*MuxSerialTime::GroupsDelay[i])
+                   ((MuxSerialTime::currentMillis-MuxSerialTime::AggrMillisElapsed[i])/1000)
+                   >= (MuxSerialTime::SecondsInM*MuxSerialTime::AggrDelay[i])
                    ) {
                     
                     /**
@@ -116,18 +116,19 @@ public:
                      * with String() arduino function
                      **/
                     
-                /**    String timeSizeToString = String(MuxSerialTime::GroupsDelay[i]);
+                    String timeSizeToString = String(MuxSerialTime::AggrDelay[i]);
                     String timeID = (timeSizeToString + "M");
-                    MuxSerialTime::GroupsElapsed[i] = MuxSerialTime::currentTime;
                     
-                    PrintTimedStats(MuxSerialTime::grouped[i], timeID ,"A");
+                    MuxSerialTime::AggrMillisElapsed[i] = MuxSerialTime::currentMillis;
                     
-                    MuxSerialTime::grouped[i]=Statistic();
-                    MuxSerialTime::grouped[i].clear();**/
+                    PrintTimedStats(MuxSerialTime::Aggregation[i], timeID ,"A");
+                    
+                    MuxSerialTime::Aggregation[i]=Statistic();
+                    MuxSerialTime::Aggregation[i].clear();
                     
                 }
                 
-                MuxSerialTime::grouped[i].add(value);
+                MuxSerialTime::Aggregation[i].add(value);
             }
             
             /**
@@ -138,7 +139,7 @@ public:
             Serial.println(value);
             
         }else{
-            skyps--;
+            skips--;
         }
     }
     
@@ -160,9 +161,12 @@ public:
     
     void HEADSerialLine(String IDLine, String TypeValue){
         
-     /**   if(syncTime != false){
+        if(syncTime ==true){
             Serial.print(LastDateTime);
             Serial.print(MuxSerialTime::ValueLineDivider);
+            Serial.print(zone);
+            Serial.print(MuxSerialTime::ValueLineDivider);
+            
         }else{
             Serial.print("-");
             Serial.print(MuxSerialTime::ValueLineDivider);
@@ -170,7 +174,7 @@ public:
             Serial.print(MuxSerialTime::ValueLineDivider);
             Serial.print("-");
             Serial.print(MuxSerialTime::ValueLineDivider);
-        }**/
+        }
         
         Serial.print(IDLine);
         Serial.print(MuxSerialTime::ValueLineDivider);
