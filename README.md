@@ -1,6 +1,6 @@
 ## MuxSerialTIME ##
-* Author: Domenico Monaco, domenico.monaco[@]kiuz.it
-* Site: http://monaco.kiuz.it
+* Author: Domenico Monaco, domenico@tecnologieperpersone.it
+* Site: http://www.domenicomonaco.it
 * LICENSE: GNU v2 
 * Date: 16 / 07 / 2014
 
